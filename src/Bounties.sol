@@ -16,14 +16,14 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
     mapping(string => uint256) attention;
     uint256 public totalAttention;
 
-    event attentionDrawnTo(address _subject, uint256 amount);
-    event attentionReset(address _subject);
+    event attentionDrawnTo(string _subject, uint256 amount);
+    event attentionReset(string _subject);
 
     /**
      * @dev Store cumulative value in attention mapping
      * @param _subject to pay attention to
      */
-    function payAttention(string _subject)
+    function payAttention(string calldata _subject)
         external
         payable
         nonReentrant
@@ -35,10 +35,10 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
     }
 
     /**
-     * @dev Retrieve attention paid to a given address
+     * @dev Retrieve attention paid to a given string
      * @return attention measured in wei
      */
-    function retrieveAttention(address _subject)
+    function retrieveAttention(string calldata _subject)
         external
         view
         returns (uint256)
@@ -67,7 +67,7 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
         return address(this).balance;
     }
 
-    function resetAttention(address _subject) external onlyOwner nonReentrant {
+    function resetAttention(string calldata _subject) external onlyOwner nonReentrant {
         attention[_subject] = 0;
         emit attentionReset(_subject);
     }
