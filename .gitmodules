@@ -1,3 +1,6 @@
 [submodule "/Users/nico/Development/bounties/lib/ds-test"]
 	path = /Users/nico/Development/bounties/lib/ds-test
 	url = https://github.com/dapphub/ds-test
+[submodule "/Users/nico/Development/bounties/lib/solmate"]
+	path = /Users/nico/Development/bounties/lib/solmate
+	url = https://github.com/rari-capital/solmate
