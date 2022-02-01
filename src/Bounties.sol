@@ -13,37 +13,37 @@ import "./Errors.sol";
  * @dev Receive ETH and associate contributions with strings.
  */
 contract Bounties is Ownable, ReentrancyGuard, Pausable {
-    mapping(address => uint256) attention;
+    mapping(string => uint256) attention;
     uint256 public totalAttention;
 
-    event attentionDrawnTo(address _contract, uint256 amount);
-    event attentionReset(address _contract);
+    event attentionDrawnTo(address _subject, uint256 amount);
+    event attentionReset(address _subject);
 
     /**
      * @dev Store cumulative value in attention mapping
-     * @param _contract to pay attention to
+     * @param _subject to pay attention to
      */
-    function payAttention(address _contract)
+    function payAttention(string _subject)
         external
         payable
         nonReentrant
         whenNotPaused
     {
-        attention[_contract] += msg.value;
+        attention[_subject] += msg.value;
         totalAttention += msg.value;
-        emit attentionDrawnTo(_contract, msg.value);
+        emit attentionDrawnTo(_subject, msg.value);
     }
 
     /**
      * @dev Retrieve attention paid to a given address
      * @return attention measured in wei
      */
-    function retrieveAttention(address _contract)
+    function retrieveAttention(address _subject)
         external
         view
         returns (uint256)
     {
-        return attention[_contract];
+        return attention[_subject];
     }
 
     function withdraw() external onlyOwner {
@@ -67,9 +67,9 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
         return address(this).balance;
     }
 
-    function resetAttention(address _contract) external onlyOwner nonReentrant {
-        attention[_contract] = 0;
-        emit attentionReset(_contract);
+    function resetAttention(address _subject) external onlyOwner nonReentrant {
+        attention[_subject] = 0;
+        emit attentionReset(_subject);
     }
 
     function pause() external onlyOwner nonReentrant {
