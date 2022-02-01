@@ -13,7 +13,7 @@ import "./Errors.sol";
  * @dev Receive ETH and associate contributions with strings.
  */
 contract Bounties is Ownable, ReentrancyGuard, Pausable {
-    mapping(string => uint256) attention;
+    mapping(string => uint256) private attention;
     uint256 public totalAttention;
 
     event attentionDrawnTo(string _subject, uint256 amount);
@@ -38,7 +38,7 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
      * @dev Retrieve attention paid to a given string
      * @return attention measured in wei
      */
-    function retrieveAttention(string calldata _subject)
+    function getAttention(string calldata _subject)
         external
         view
         returns (uint256)
