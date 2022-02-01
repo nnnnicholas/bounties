@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./Errors.sol";
 
+
 /**
  * @title Bounties
  * @author @nnnnicholas
@@ -29,6 +30,7 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
         nonReentrant
         whenNotPaused
     {
+        if (msg.value < 1) revert ZeroValue();
         attention[_subject] += msg.value;
         totalAttention += msg.value;
         emit attentionDrawnTo(_subject, msg.value);
@@ -67,7 +69,11 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
         return address(this).balance;
     }
 
-    function resetAttention(string calldata _subject) external onlyOwner nonReentrant {
+    function resetAttention(string calldata _subject)
+        external
+        onlyOwner
+        nonReentrant
+    {
         attention[_subject] = 0;
         emit attentionReset(_subject);
     }
