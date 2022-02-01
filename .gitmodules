@@ -4,3 +4,6 @@
 [submodule "/Users/nico/Development/bounties/lib/solmate"]
 	path = /Users/nico/Development/bounties/lib/solmate
 	url = https://github.com/rari-capital/solmate
+[submodule "/Users/nico/Development/bounties/lib/openzeppelin-contracts"]
+	path = /Users/nico/Development/bounties/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
