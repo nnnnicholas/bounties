@@ -7,48 +7,50 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./Errors.sol";
 
-
 /**
- * @title Bounties
+ * @title Sponsor
  * @author @nnnnicholas
- * @dev Receive ETH and associate contributions with strings.
+ * @dev Allow people and contracts to sponsor words and phrases.
  */
-contract Bounties is Ownable, ReentrancyGuard, Pausable {
-    mapping(string => uint256) private attention;
-    uint256 public totalAttention;
+contract Sponsor is Ownable, ReentrancyGuard, Pausable {
+    mapping(string => uint256) private sponsored;
 
-    event attentionDrawnTo(string _subject, uint256 amount);
-    event attentionReset(string _subject);
+    event newSponsorship(
+        string indexed _name,
+        uint256 indexed _amount,
+        string indexed _note
+    );
+    event sponsorReset(string indexed _name);
 
     /**
-     * @dev Store cumulative value in attention mapping
-     * @param _subject to pay attention to
+     * @dev Store cumulative value in sponsor mapping
+     * @param _name to sponsor
+     * @param _note to associate with this contribution
      */
-    function payAttention(string calldata _subject)
+    function sponsor(string calldata _name, string calldata _note)
         external
         payable
         nonReentrant
         whenNotPaused
     {
         if (msg.value < 1) revert ZeroValue();
-        attention[_subject] += msg.value;
-        totalAttention += msg.value;
-        emit attentionDrawnTo(_subject, msg.value);
+        sponsored[_name] += msg.value;
+        emit newSponsorship(_name, msg.value, _note);
     }
 
     /**
-     * @dev Retrieve attention paid to a given string
-     * @return attention measured in wei
+     * @dev Retrieve sponsorship of a given string
+     * @return sponsorship measured in wei
      */
-    function getAttention(string calldata _subject)
+    function getSponsorship(string calldata _name)
         external
         view
         returns (uint256)
     {
-        return attention[_subject];
+        return sponsored[_name];
     }
 
-    function withdraw() external onlyOwner {
+    function withdrawAll() external onlyOwner {
         uint256 balance = address(this).balance;
         if (balance <= 0) revert ZeroBalance();
         address owner = owner();
@@ -61,21 +63,27 @@ contract Bounties is Ownable, ReentrancyGuard, Pausable {
         onlyOwner
         nonReentrant
     {
+        uint256 balance = address(this).balance;
+        if (balance <= 0 || _amount <= 0) revert ZeroValue();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
+    }
+
+    function withdrawAllTo(address payable _to) public onlyOwner nonReentrant {
+        withdrawTo(_to, address(this).balance);
     }
 
     function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function resetAttention(string calldata _subject)
+    function resetSponsorship(string calldata _name)
         external
         onlyOwner
         nonReentrant
     {
-        attention[_subject] = 0;
-        emit attentionReset(_subject);
+        sponsored[_name] = 0;
+        emit sponsorReset(_name);
     }
 
     function pause() external onlyOwner nonReentrant {
