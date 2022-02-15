@@ -1,29 +1,33 @@
 # Bounties 
 
-Permissionless bounties for content creators. This contract lets you collect donations pointing at user defined strings. 
+Permissionless bounties for content creators. 
 
-<!-- ## Mechanism
-Leaderboard allows EVM wallets to *draw attention* to a given address. 
+## What is Bounties?
 
-Example scenario:
+I am happy to introduce the second iteration of my experimental permissionless bounties smart contract called Bounties.sol.
 
-- ilemi deploys a Leaderboard to Ethereum Mainnet. He is the contract owner. **He announces that he will do a Dune Dash and Twitter thread about any address that receives 1 ETH of attention.**
-- I, an enthusiast of a certain NFT collection or DAO, call `payAttention(address contract)` and send 0.1 ETH in the same transaction. I encourage nine of my closest friends to do the same. I ping ilemi on twitter when it is done and mention the contract address I want him to look into.
-- ilemi calls `retrieveAttention(address contract)` and confirms that this address *has* received 1 ETH worth of attention. As the owner, he may `withdraw()` the contract's balance to his wallet, or he may `withdrawTo(address to, uint amount)` a portion of the contract's balance to any address.
+Bounties allow content creators to collect contributions from their audience in exchange for rewards. Here's how it works:
+1. The creator publishes a list of reward tiers and a link to make a donation.
+2. (Optional) The public make contributions towards the reward tiers of their choosing.
+3. The creator checks which tiers have been reached and performs the pre-specified action.
+4. The creator withdraws funds from the contract at their leisure
+5. (Optional) The creator resets the scores associated with 
 
-## Extra features
-- Owner may `resetAttention(address contract)` which sets that contract's attention counter to 0.
-- Owner may pause `payAttention()` so that no one may pay attention to any address.
-- Anyone can call `totalAttention()` to see total attention paid (ETH).
+## Motivation
+### Problem
+Funding content creation is time consuming. Organizing relationships with sponsors and clients takes creator time and attention away from their work. While some creations lend themselves to being sold as NFTs, many creators' output does not fit well within existing NFT formats (1/1, 10k pfp, etc.). For these creators, sponsorship, advertising, and donations are more apt models. However too often, these creators become bogged down negotiating each financial relationship separately. Financing content like podcasts, essays, and Dune Dashboards is difficult, especially for independent creators.
 
-## Deploy instructions
-Copy paste the contract into remix and hit deploy lol.
+### Goal
+Creators need ways to create sustainable and recurring revenue streams that do not incur administrative overhead that gets in the way of the creative process. If we can find new revenue streams that enable independent creators to pay themselves salaries and support production costs, then we make it possible for more individuals and small teams to dedicate time to creating new and interesting projects, without *needing* to sign deals with publishers or hire in-house adveretising managers. 
 
-## Recent deploy
-Rinkeby https://rinkeby.etherscan.io/address/0x0e3971a3C3c0c30db63597059A47D66d3e1B24C7
+### Purpose
+The purpose of Bounties.sol is to allow content creators to state up-front what they are willing to do for a given contribution -- much like Kickstarter reward tiers -- then collect those funds permissionlessly on the blockchain. Bounties is an experiment aiming to enable content creators like myself to collect funds from their audience without negotiating each financial relationship independently. 
 
-## Origins story
-[ilemi.eth](https://twitter.com/andrewhong5297)'s Dune Analytics dashboards and Twitter threads came to my attention in November 2021 in the wake of ConstitutionDAO, for which he created [an excellent dash](https://dune.xyz/ilemi/ConstitutionDAO-Funding-Tracker). It occurred to me that ilemi could charge people for the quantitative analysis he provides. Leaderboard is the system I created to help people like ilemi permissionlessly monetize their attention.
--->
-## Author
-[@nnnnicholas](https://twitter.com/nnnnicholas) | nnnnicholas.eth 
+Bounties is an experiment in consensual permissionless sponsorship. I say what I am willing to do for a given sum of contributions, and if the money shows up, I do it.
+
+The way one creator uses Bounties may differ greatly from another. This is an open ended experiment, so no matter what happens, we're learning something new!
+
+## Risks
+1. The greatest risk is that Bounties are simply *too* unopinionated for most people to find them useful. I intend to experiment with using Bounties myself, so I'm not terribly worried if no one else finds them useful right now. I'm learning as I go. 
+2. The Bounties model depends on the creator's off-chain reputation. As a creator, I both state my reward tiers and fulfill the work without any on-chain guarantees. Some may see this as a drawback fit to be patched with clever smart contract affordances like escrows, multi-sigs, and proofs, I believe that reputation will nevertheless play an important role in creator appropriation of smart contracts. I prefer to start with simpler contracts that play out 
+3. There can be bugs in my code and funds can be lost. I offer no warranty, guarantee, or assurances to anyone running or interacting with this code.
