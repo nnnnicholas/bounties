@@ -20,7 +20,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         uint256 indexed _amount,
         string indexed _note
     );
-    event sponsorReset(string indexed _name);
+    event sponsorReset(string indexed _name, uint256 indexed _priorValue);
 
     /**
      * @dev Store cumulative value in sponsor mapping
@@ -64,7 +64,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         nonReentrant
     {
         uint256 balance = address(this).balance;
-        if (balance <= 0 || _amount <= 0) revert ZeroValue();
+        if (balance <= 0 || _amount > balance) revert InsufficientBalance();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
     }
@@ -82,8 +82,9 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         onlyOwner
         nonReentrant
     {
+        uint256 priorValue = sponsored[_name];
         sponsored[_name] = 0;
-        emit sponsorReset(_name);
+        emit sponsorReset(_name, priorValue);
     }
 
     function pause() external onlyOwner nonReentrant {
