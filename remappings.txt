@@ -1,0 +1,3 @@
+ds-test/=/Users/nico/Development/bounties/lib/ds-test/src/
+@openzeppelin/=lib/openzeppelin-contracts/
+solmate/=/Users/nico/Development/bounties/lib/solmate/src/

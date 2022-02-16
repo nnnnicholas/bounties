@@ -1,9 +1,9 @@
-[submodule "/Users/nico/Development/bounties/lib/ds-test"]
-	path = /Users/nico/Development/bounties/lib/ds-test
+[submodule "lib/ds-test"]
+	path = lib/ds-test
 	url = https://github.com/dapphub/ds-test
-[submodule "/Users/nico/Development/bounties/lib/solmate"]
-	path = /Users/nico/Development/bounties/lib/solmate
+[submodule "lib/solmate"]
+	path = lib/solmate
 	url = https://github.com/rari-capital/solmate
-[submodule "/Users/nico/Development/bounties/lib/openzeppelin-contracts"]
-	path = /Users/nico/Development/bounties/lib/openzeppelin-contracts
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
