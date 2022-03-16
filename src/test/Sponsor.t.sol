@@ -21,7 +21,7 @@ interface Vm {
 }
 
 contract NotPayable {
-    fallback() external{}
+    fallback() external {}
 }
 
 contract SponsorTest is DSTest {
@@ -51,7 +51,7 @@ contract SponsorTest is DSTest {
     }
 
     // Sponsor tests
-    function testCannotZeroValue() public {
+    function testCannotSponsorZeroValue() public {
         vm.expectRevert(Sponsor.ZeroValue.selector);
         sponsor.sponsor{value: 0}("test", "comment");
     }
@@ -77,6 +77,11 @@ contract SponsorTest is DSTest {
         testSponsorMany();
         sponsor.resetSponsorship("Sponsored name");
         assertEq(sponsor.getSponsorship("Sponsored name"), 0);
+    }
+
+    function testResetAndSponsorAgain() public {
+        testResetSponsorship();
+        testSponsorMany();
     }
 
     function testSponsorDifferentNamesAndNotes() public {
@@ -156,16 +161,36 @@ contract SponsorTest is DSTest {
         sponsor.withdrawTo(addr1, 1);
     }
 
-    // Withdraw tests with Fuzzing
-    function testWithdrawToWithFuzzing(uint8 x) public {
-        vm.assume(x <= 10);
+    function testSponsorWithFuzzing(uint256 x) public {
+        vm.assume(x != 0);
+        vm.deal(addr2, x);
+        string memory name = "Sponsored name";
+        string memory note = "Note text";
         vm.startPrank(addr2);
-        testSponsor(); // "Sponsored Name" sponsored for 10 wei
-        assertEq(addr3.balance, 0);
+        sponsor.sponsor{value: x}(name, note);
+        assertEq(sponsor.getSponsorship(name), x);
         vm.stopPrank();
-        sponsor.withdrawTo(addr3, x);
-        assertEq(addr3.balance, x);
-        assertEq(sponsor.getBalance(), 10 - x);
+    }
+
+    // Withdraw tests with Fuzzing
+    function testWithdrawToWithFuzzing(uint256 x, uint256 y) public {
+        vm.assume(y <= x && y != 0);
+        testSponsorWithFuzzing(x); // Sponsor
+        // Withdraw
+        assertEq(addr3.balance, 0);
+        sponsor.withdrawTo(addr3, y);
+        assertEq(addr3.balance, y);
+        assertEq(sponsor.getBalance(), x - y);
+    }
+
+    function testWithdrawAllWithFuzzing(uint256 x, uint256 y) public {
+        vm.assume(y <= x && y != 0);
+        testSponsorWithFuzzing(x); // Sponsor
+        // Withdraw
+        assertEq(addr3.balance, 0);
+        sponsor.withdrawTo(addr3, y);
+        assertEq(addr3.balance, y);
+        assertEq(sponsor.getBalance(), x - y);
     }
 
     // function testGas1() public {
