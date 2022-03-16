@@ -130,7 +130,7 @@ contract SponsorTest is DSTest {
         vm.expectRevert(bytes4(keccak256(bytes("ZeroBalance()"))));
     }
 
-    function testFailWithdrawToNotPayable() public {
+    function testCannotWithdrawToNotPayable() public {
         testSponsor();
         vm.expectRevert(Sponsor.FailedToSendETH.selector);
         sponsor.withdrawTo(payable(address(notPayable)), 1);
