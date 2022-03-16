@@ -168,6 +168,15 @@ contract SponsorTest is DSTest {
         assertEq(sponsor.getBalance(), 10 - x);
     }
 
+    // function testGas1() public {
+    //     testSponsor();
+    //     sponsor.withdrawAll1();
+    // }
+    // function testGas2() public {
+    //     testSponsor();
+    //     sponsor.withdrawAll2();
+    // }
+
     // Sponsor tests with Fuzzing
     // function testSponsorWithFuzzing(
     //     string calldata x,
