@@ -50,7 +50,7 @@ contract SponsorTest is DSTest {
         emit log_named_uint("addr2 balance", addr2.balance);
     }
 
-    // Sponsor tests: Regular
+    // Sponsor tests
     function testCannotZeroValue() public {
         vm.expectRevert(Sponsor.ZeroValue.selector);
         sponsor.sponsor{value: 0}("test", "comment");
@@ -105,7 +105,6 @@ contract SponsorTest is DSTest {
     }
 
     // Withdraw tests
-
     function testWithdrawAll() public {
         vm.prank(addr2);
         testSponsor(); // "Sponsored Name" sponsored for 10 wei
@@ -123,6 +122,16 @@ contract SponsorTest is DSTest {
         sponsor.withdrawTo(addr3, 5); // tktk fuzz this
         assertEq(addr3.balance, 5);
         assertEq(sponsor.getBalance(), 5);
+    }
+
+    function testWithdrawAllTo() public {
+        vm.startPrank(addr2);
+        testSponsor(); // "Sponsored Name" sponsored for 10 wei
+        assertEq(addr3.balance, 0);
+        vm.stopPrank();
+        sponsor.withdrawAllTo(addr3);
+        assertEq(addr3.balance, 10);
+        assertEq(sponsor.getBalance(), 0);
     }
 
     function testCannotWithdrawAllZeroBalance() public {
@@ -146,20 +155,6 @@ contract SponsorTest is DSTest {
         vm.expectRevert(Sponsor.ZeroBalance.selector);
         sponsor.withdrawTo(addr1, 1);
     }
-
-    // function testWithdrawAllTo
-
-    //    function withdrawTo(address payable _to, uint256 _amount)
-    //     public
-    //     onlyOwner
-    //     nonReentrant
-    // {
-    //     uint256 balance = address(this).balance;
-    //     if (balance == 0 || _amount > balance) revert InsufficientBalance();
-    //     (bool success, ) = _to.call{value: _amount}("");
-    //     if (!success) revert FailedToSendETH();
-    //     emit withdrawl(_to, _amount);
-    // }
 
     // Withdraw tests with Fuzzing
     function testWithdrawToWithFuzzing(uint8 x) public {
