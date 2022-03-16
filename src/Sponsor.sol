@@ -22,7 +22,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         string indexed _note
     );
     event sponsorReset(string indexed _name, uint256 indexed _priorValue);
-    event withdrawl(address indexed _withdrawnBy, uint256 indexed _amount);
+    event withdrawal(address indexed _withdrawnBy, uint256 indexed _amount);
 
     // Errors
     error ZeroValue();
@@ -32,8 +32,8 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
 
     /**
      * @dev Store cumulative value in sponsor mapping
-     * @param _name to sponsor
-     * @param _note to associate with this contribution
+     * @param _name String to sponsor
+     * @param _note String to associate with this contribution
      */
     function sponsor(string calldata _name, string calldata _note)
         external
@@ -58,30 +58,42 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         return sponsored[_name];
     }
 
-    function withdrawAll() external onlyOwner {
+    /**
+     * @dev Withdraw total contract balance to msg.sender
+     */
+    function withdrawAll() external onlyOwner nonReentrant {
         uint256 balance = address(this).balance;
         if (balance == 0) revert ZeroBalance();
         address owner = owner();
         (bool success, ) = owner.call{value: balance}("");
         if (!success) revert FailedToSendETH();
-        emit withdrawl(owner, balance);
+        emit withdrawal(owner, balance);
     }
 
+    /**
+     * @dev Withdraw a given amount to a given address
+     * @param _to Address to send funds to
+     * @param _amount Amount to withdraw
+     */
     function withdrawTo(address payable _to, uint256 _amount)
         public
         onlyOwner
         nonReentrant
     {
+        _withdrawTo(_to, _amount);
+    }
+
+    function _withdrawTo(address payable _to, uint256 _amount) private {
         uint256 balance = address(this).balance;
         if (balance == 0) revert ZeroBalance();
         if (_amount > balance) revert InsufficientBalance();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
-        emit withdrawl(_to, _amount);
+        emit withdrawal(_to, _amount);
     }
 
     function withdrawAllTo(address payable _to) public onlyOwner nonReentrant {
-        withdrawTo(_to, address(this).balance);
+        _withdrawTo(_to, address(this).balance);
     }
 
     function getBalance() public view returns (uint256) {
