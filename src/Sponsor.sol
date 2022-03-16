@@ -73,7 +73,8 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         nonReentrant
     {
         uint256 balance = address(this).balance;
-        if (balance == 0 || _amount > balance) revert InsufficientBalance();
+        if (balance == 0) revert ZeroBalance();
+        if (_amount > balance) revert InsufficientBalance();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
         emit withdrawl(_to, _amount);
