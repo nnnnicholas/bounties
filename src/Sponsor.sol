@@ -62,12 +62,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
      * @dev Withdraw total contract balance to msg.sender
      */
     function withdrawAll() external onlyOwner nonReentrant {
-        uint256 balance = address(this).balance;
-        if (balance == 0) revert ZeroBalance();
-        address owner = owner();
-        (bool success, ) = owner.call{value: balance}("");
-        if (!success) revert FailedToSendETH();
-        emit withdrawal(owner, balance);
+        _withdrawTo(payable(msg.sender), address(this).balance);
     }
 
     /**
@@ -83,6 +78,10 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         _withdrawTo(_to, _amount);
     }
 
+    function withdrawAllTo(address payable _to) public onlyOwner nonReentrant {
+        _withdrawTo(_to, address(this).balance);
+    }
+
     function _withdrawTo(address payable _to, uint256 _amount) private {
         uint256 balance = address(this).balance;
         if (balance == 0) revert ZeroBalance();
@@ -90,10 +89,6 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
         emit withdrawal(_to, _amount);
-    }
-
-    function withdrawAllTo(address payable _to) public onlyOwner nonReentrant {
-        _withdrawTo(_to, address(this).balance);
     }
 
     function getBalance() public view returns (uint256) {
