@@ -4,7 +4,7 @@ Permissionless bounties for content creators.
 
 ## What is Bounties?
 
-I am happy to introduce the second iteration of my experimental permissionless bounties smart contract called Bounties.sol.
+Bounties is the second iteration of my experimental permissionless bounty smart contract called Bounties.sol (previously Leaderboard.sol).
 
 Bounties allow content creators to collect contributions from their audience in exchange for rewards. Here's how it works:
 1. The creator publishes a list of reward tiers and a link to make a donation.
