@@ -16,11 +16,19 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
     mapping(string => uint256) private sponsored;
 
     event newSponsorship(
+        address _from,
         string indexed _name,
         uint256 indexed _amount,
         string indexed _note
     );
     event sponsorReset(string indexed _name, uint256 indexed _priorValue);
+    event withdrawl(address indexed _withdrawnBy, uint256 indexed _amount);
+
+    // Errors
+    error ZeroValue();
+    error ZeroBalance();
+    error FailedToSendETH();
+    error InsufficientBalance();
 
     /**
      * @dev Store cumulative value in sponsor mapping
@@ -35,7 +43,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
     {
         if (msg.value < 1) revert ZeroValue();
         sponsored[_name] += msg.value;
-        emit newSponsorship(_name, msg.value, _note);
+        emit newSponsorship(msg.sender, _name, msg.value, _note);
     }
 
     /**
@@ -52,10 +60,11 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
 
     function withdrawAll() external onlyOwner {
         uint256 balance = address(this).balance;
-        if (balance <= 0) revert ZeroBalance();
+        if (balance == 0) revert ZeroBalance();
         address owner = owner();
         (bool success, ) = owner.call{value: balance}("");
         if (!success) revert FailedToSendETH();
+        emit withdrawl(owner, balance);
     }
 
     function withdrawTo(address payable _to, uint256 _amount)
@@ -64,9 +73,10 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         nonReentrant
     {
         uint256 balance = address(this).balance;
-        if (balance <= 0 || _amount > balance) revert InsufficientBalance();
+        if (balance == 0 || _amount > balance) revert InsufficientBalance();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
+        emit withdrawl(_to, _amount);
     }
 
     function withdrawAllTo(address payable _to) public onlyOwner nonReentrant {
