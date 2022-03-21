@@ -193,40 +193,6 @@ contract SponsorTest is DSTest {
         assertEq(sponsor.getBalance(), x - y);
     }
 
-    // function testGas1() public {
-    //     testSponsor();
-    //     sponsor.withdrawAll1();
-    // }
-    // function testGas2() public {
-    //     testSponsor();
-    //     sponsor.withdrawAll2();
-    // }
-
-    // Sponsor tests with Fuzzing
-    // function testSponsorWithFuzzing(
-    //     string calldata x,
-    //     uint64 y,
-    //     string calldata z
-    // ) public {
-    //     // TODO why limited to uint32?
-    //     sponsor.sponsor{value: y}(x, z);
-    //     assertEq(sponsor.getSponsorship(x), y);
-    // }
-
-    // function testSponsorManyWithFuzzing(
-    //     string calldata x,
-    //     uint16 z,
-    //     string calldata q
-    // ) public {
-    //     // TODO why limited to uint32?
-    //     uint256 y = 100000;
-    //     sponsor.sponsor{value: y}(x, q);
-    //     assertEq(sponsor.getSponsorship(x), y);
-    //     sponsor.sponsor{value: z}(x, q);
-    //     uint256 a = uint256(y) + uint256(z);
-    //     assertEq(sponsor.getSponsorship(x), a);
-    // }
-
     receive() external payable {
         emit testReceivedEth(msg.sender);
     }
