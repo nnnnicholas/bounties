@@ -18,6 +18,13 @@ interface Vm {
     function label(address, string calldata) external;
 
     function assume(bool) external;
+
+    function expectEmit(
+        bool,
+        bool,
+        bool,
+        bool
+    ) external;
 }
 
 contract NotPayable {
@@ -25,6 +32,17 @@ contract NotPayable {
 }
 
 contract SponsorTest is DSTest {
+    // events imported from Sponsor.sol
+    event NewSponsorship(
+        address _from,
+        string indexed _name,
+        uint256 indexed _amount,
+        string indexed _note
+    );
+    event SponsorReset(string indexed _name, uint256 indexed _priorValue);
+    event Withdrawal(address indexed _withdrawnBy, uint256 indexed _amount);
+
+    // Setup
     event testReceivedEth(address sender); // emits when `receive()` is called
     Vm vm = Vm(HEVM_ADDRESS);
     address payable deployer = payable(this);
@@ -191,6 +209,27 @@ contract SponsorTest is DSTest {
         sponsor.withdrawTo(addr3, y);
         assertEq(addr3.balance, y);
         assertEq(sponsor.getBalance(), x - y);
+    }
+
+    // Events tests
+    function testEventNewSponsorship() public {
+        vm.expectEmit(true, true, true, true);
+        emit NewSponsorship(address(this), "Sponsored name", 10, "Note text");
+        testSponsor();
+    }
+
+    function testEventSponsorReset() public {
+        testSponsorMany();
+        vm.expectEmit(true, true, false, false);
+        emit SponsorReset("Sponsored name", 30);
+        sponsor.resetSponsorship("Sponsored name");
+    }
+
+    function testEventSponsorWithdraw() public {
+        testSponsor();
+        vm.expectEmit(true, true, false, false);
+        emit Withdrawal(address(this), 10);
+        sponsor.withdrawAll();
     }
 
     receive() external payable {
