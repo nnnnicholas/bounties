@@ -15,14 +15,14 @@ import "./Errors.sol";
 contract Sponsor is Ownable, ReentrancyGuard, Pausable {
     mapping(string => uint256) private sponsored;
 
-    event newSponsorship(
+    event NewSponsorship(
         address _from,
         string indexed _name,
         uint256 indexed _amount,
         string indexed _note
     );
-    event sponsorReset(string indexed _name, uint256 indexed _priorValue);
-    event withdrawal(address indexed _withdrawnBy, uint256 indexed _amount);
+    event SponsorReset(string indexed _name, uint256 indexed _priorValue);
+    event Withdrawal(address indexed _withdrawnBy, uint256 indexed _amount);
 
     // Errors
     error ZeroValue();
@@ -43,7 +43,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
     {
         if (msg.value < 1) revert ZeroValue();
         sponsored[_name] += msg.value;
-        emit newSponsorship(msg.sender, _name, msg.value, _note);
+        emit NewSponsorship(msg.sender, _name, msg.value, _note);
     }
 
     /**
@@ -88,7 +88,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
         if (_amount > balance) revert InsufficientBalance();
         (bool success, ) = _to.call{value: _amount}("");
         if (!success) revert FailedToSendETH();
-        emit withdrawal(_to, _amount);
+        emit Withdrawal(_to, _amount);
     }
 
     function getBalance() public view returns (uint256) {
@@ -102,7 +102,7 @@ contract Sponsor is Ownable, ReentrancyGuard, Pausable {
     {
         uint256 priorValue = sponsored[_name];
         sponsored[_name] = 0;
-        emit sponsorReset(_name, priorValue);
+        emit SponsorReset(_name, priorValue);
     }
 
     function pause() external onlyOwner nonReentrant {
