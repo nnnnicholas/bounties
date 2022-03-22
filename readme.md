@@ -2,6 +2,12 @@
 
 Permissionless bounties for content creators. 
 
+## Quick Start
+Deploy (using your own $RPC_URL and $PRIV_KEY)
+```sh
+forge create --rpc-url <YOUR_RPC_URL> --private-key <YOUR_PRIV_KEY> src/Sponsor.sol:Sponsor
+```
+
 ## What is Bounties?
 
 Bounties is the second iteration of my experimental permissionless bounty smart contract called Bounties.sol (previously Leaderboard.sol).
