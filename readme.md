@@ -3,10 +3,22 @@
 Permissionless bounties for content creators. 
 
 ## Quick Start
-Deploy (using your own $RPC_URL and $PRIV_KEY)
+Deploy (using your own RPC_URL such as Infura and PRIV_KEY)
 ```sh
 forge create --rpc-url <YOUR_RPC_URL> --private-key <YOUR_PRIV_KEY> src/Sponsor.sol:Sponsor
 ```
+
+Verify
+```sh
+forge verify-contract --chain-id <CHAIN_ID> --num-of-optimizations 200 --compiler-version v0.8.11+commit.d7f03943 <CONTRACT_ADDRESS> src/Sponsor.sol:Sponsor <ETHERSCAN_API_KEY>
+```
+
+For example, using PATH variables (prefixed by `$` symbol)
+`forge create --rpc-url $RINKEBY_RPC_URL --private-key $RINKEBY_PRIV_KEY src/Sponsor.sol:Sponsor`
+
+`forge verify-contract 0x49e108533bcebf13006212c5926b9dd9cf6090eb --compiler-version v0.8.11+commit.d7f03943 --chain-id 4 src/Sponsor.sol:Sponsor %ETHERSCAN_API_KEY`
+
+More info on deploying and verifying availabile [here](https://onbjerg.github.io/foundry-book/forge/deploying.html).
 
 ## What is Bounties?
 
